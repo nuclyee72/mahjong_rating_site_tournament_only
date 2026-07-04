@@ -307,6 +307,28 @@ def import_tournament_games():
     print(f"[IMPORT_TOURNAMENT] inserted rows: {inserted}")
     return redirect(url_for("mahjong.index_page"))
 
+@mahjong_bp.route("/manifest.json")
+def manifest():
+    data = {
+        "name": CLUB_NAME,
+        "short_name": CLUB_NAME,
+        "start_url": "/",
+        "display": "standalone",
+        "background_color": "#ffffff",
+        "theme_color": "#4f7dff",
+        "icons": [
+            {
+                "src": "/static/icon.png",
+                "sizes": "192x192",
+                "type": "image/png"
+            }
+        ]
+    }
+    return Response(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        mimetype="application/manifest+json"
+    )
+
 @mahjong_bp.route("/")
 def index_page():
     return render_template("index.html", club_name=CLUB_NAME)
