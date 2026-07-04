@@ -14,7 +14,10 @@ def get_config():
         return json.load(f)
 
 DB_PATH = os.path.join(BASE_DIR, "games.db")
-CLUB_NAME = "ㅁㄴㅇㄹ"
+def get_club_name():
+    manifest_path = os.path.join(BASE_DIR, "static", "manifest.json")
+    with open(manifest_path, "r", encoding="utf-8") as f:
+        return json.load(f).get("name", "마작 레이팅")
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -50,7 +53,7 @@ mahjong_bp = Blueprint('mahjong', __name__)
 @app.context_processor
 def inject_club_name():
     cfg = get_config()
-    return dict(club_name=CLUB_NAME, config=cfg)
+    return dict(club_name=get_club_name(), config=cfg)
 
 CORS(app)
 init_db()
@@ -200,12 +203,12 @@ def import_tournament_games():
         <html lang="ko">
         <head>
           <meta charset="UTF-8">
-          <title>{CLUB_NAME} 대회전 CSV 업로드</title>
+          <title>{get_club_name()} 대회전 CSV 업로드</title>
           <link rel="stylesheet" href="/static/style.css">
         </head>
         <body>
           <div class="top-bar">
-            <h1>{CLUB_NAME} 대회전 CSV 업로드</h1>
+            <h1>{get_club_name()} 대회전 CSV 업로드</h1>
             <div class="view-switch">
               <a href="/" class="view-switch-btn">메인으로 돌아가기</a>
             </div>
@@ -316,7 +319,7 @@ def manifest():
 
 @mahjong_bp.route("/")
 def index_page():
-    return render_template("index.html", club_name=CLUB_NAME)
+    return render_template("index.html", club_name=get_club_name())
 
 app.register_blueprint(mahjong_bp, url_prefix="/")
 
