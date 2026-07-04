@@ -14,7 +14,7 @@ def get_config():
         return json.load(f)
 
 DB_PATH = os.path.join(BASE_DIR, "games.db")
-CLUB_NAME = "<동아리명>"
+CLUB_NAME = "ㅁㄴㅇㄹ"
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -309,25 +309,10 @@ def import_tournament_games():
 
 @mahjong_bp.route("/manifest.json")
 def manifest():
-    data = {
-        "name": CLUB_NAME,
-        "short_name": CLUB_NAME,
-        "start_url": "/",
-        "display": "standalone",
-        "background_color": "#ffffff",
-        "theme_color": "#4f7dff",
-        "icons": [
-            {
-                "src": "/static/icon.png",
-                "sizes": "192x192",
-                "type": "image/png"
-            }
-        ]
-    }
-    return Response(
-        json.dumps(data, ensure_ascii=False, indent=2),
-        mimetype="application/manifest+json"
-    )
+    manifest_path = os.path.join(BASE_DIR, "static", "manifest.json")
+    with open(manifest_path, "r", encoding="utf-8") as f:
+        data = f.read()
+    return Response(data, mimetype="application/manifest+json")
 
 @mahjong_bp.route("/")
 def index_page():
